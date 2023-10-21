@@ -18,7 +18,7 @@ int main(void){
 
 		GPIOB->ODR |= (1U<<9);				//Pull-up resistor at PB9
 
-    // Performing Locking sequence to Lock configuration
+    		// Performing Locking sequence to Lock configuration
 
 		GPIOC->LCKR =  0x12000;
 		GPIOC->LCKR =  0x02000;
