@@ -1,0 +1,46 @@
+#include "stm32f10x.h"
+#include "stdint.h"
+
+int main(void){
+
+		int i=0;
+		
+	
+		RCC->APB2ENR |= (1<<4)|(1<<3);	//GPIOC and GPIOB Enable	
+	
+		GPIOC->CRH |= (3U<<20);				//Output mode with 50Mhz
+		GPIOC->CRH &= ~(3U<<22);			//Push/Pull Output 
+		
+		GPIOB->CRH &= ~(3U<<4);				//Input Mode
+
+		GPIOB->CRH |=  (1U<<7);				//Push/Pull Input
+		GPIOB->CRH &= ~(1U<<6);				//Push/Pull Input
+
+		GPIOB->ODR |= (1U<<9);				//Pull-up resistor at PB9
+
+    // Performing Locking sequence to Lock configuration
+
+		GPIOC->LCKR =  0x12000;
+		GPIOC->LCKR =  0x02000;
+		GPIOC->LCKR =  0x12000;
+		GPIOC->LCKR & (1U<<16);
+
+		
+		
+		while(1){
+				if(!((GPIOB->IDR)&(1U<<9)))
+			{
+				GPIOC->ODR ^= (1<<13);				//Toggling PC13 Pin
+				
+				for(i=0;i<1000000;i++){
+				__NOP();//Generate Delay
+				}		
+				
+			}
+			else{
+				GPIOC->ODR |= (1U<<13);				//Turn Off PC13
+			}
+
+		}
+	
+}
